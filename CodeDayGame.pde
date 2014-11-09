@@ -9,11 +9,24 @@ final float TIME_STEP = .05;
 LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
 LinkedList<GameObject> objectsToAdd;
+<<<<<<< HEAD
 int level  = 0;
 GameObject[][] gos = {
 	{	new FinalPlatform(width - 60, 0, 60, 32), new Player(50, 50, 32)},
 	{	new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
 };
+=======
+
+int WIDTH = 1280;
+int HEIGHT = 500;
+
+GameObject[][] gos = {
+
+    {new FinalPlatform(WIDTH - 70 , HEIGHT, 60, 32), new Player(50, 50, 32)},
+    {new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
+};
+int level = 0;
+>>>>>>> FETCH_HEAD
 
 FWorld world;
 boolean[] keys;
@@ -49,20 +62,34 @@ void initElse() {
 }
 
 void incrementLevel() {
+<<<<<<< HEAD
 	
+=======
 }
+
+void loadLevel() {
+	for(GameObject go: gos[level]) {
+		go.init();
+		objects.add(go);
+	}
+>>>>>>> FETCH_HEAD
+}
+
+
 
 void updateWorld() {
 	world.step();
 	for(GameObject go : objects){
 		go.update();
 	}
+
 	objects.removeAll(objectsToRemove);
 	objects.addAll(objectsToAdd);
 	objectsToRemove.clear();
 	objectsToAdd.clear();
 	globalTime += TIME_STEP;
 }
+
 
 void drawWorld() {
 	background(255,0,0);
@@ -91,9 +118,15 @@ void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
+<<<<<<< HEAD
+=======
+	loadLevel();
+>>>>>>> FETCH_HEAD
 }
 
 void draw() {
+	// if(frameCount == 1)
+	// 	loadLevel();
 	updateWorld();
 	drawWorld();
 }
@@ -202,6 +235,7 @@ class Player extends GameObject {
 				dead = true;
 				world.remove(body);
 				body.removeFromWorld();
+				
 			}
 			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
 				body.setVelocity(0, body.getVelocityY());
