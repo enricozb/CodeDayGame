@@ -24,7 +24,8 @@ int HEIGHT = 500;
 GameObject[][] gos = {
 
     {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.")},
-    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)}
+    {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
+    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)},
 };
 int level = 0;
 
@@ -239,7 +240,7 @@ class TextObject extends GameObject {
 
 class Player extends GameObject {
 	final static int JUMP_CALL_COUNT_MAX = 40;
-	final static float DEATH_SIZE_THRESHOLD = 10;
+	final static float DEATH_SIZE_THRESHOLD = 5;
 
 	boolean dead = false;
 
