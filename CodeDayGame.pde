@@ -13,7 +13,7 @@ import java.util.Map.Entry;
     GameObject[][] gos = {
 
         {new FinalPlatform(width - 60, 0, 60, 32), new Player(50, 50, 32)},
-        {new Player(50, 50, 32), new MovingPlatForm(width/2, height/2, width/2, height - 400, 32)}
+        {new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
     };
 
 FWorld world;
@@ -22,6 +22,7 @@ boolean[] keys;
 float globalTime;
 int countOfPress;
 
+<<<<<<< HEAD
 
     void initFisica() {
         Fisica.init(this);
@@ -172,27 +173,13 @@ abstract class Moving extends GameObject {
         this(x, x, y, y, sx, sy);
     }
 
+=======
+>>>>>>> a5904e2ae03a63ac752aece75c339440505ced4e
 void initFisica() {
 	Fisica.init(this);
 	world = new FWorld();
 	world.setEdges();
 	world.setGravity(0,1e3);
-}
-
-void initWorld() {
-	//minx, maxX, miny, maxY, sx, sy
-	//remember to add f
-	//pls
-	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + " - 1",new LinkedList() {{
-		add(width/2f);add(width/2f + 20);add(200f);add(200f);add(180f);add(30f);
-	}});
-	goData1.put(GameObject.PLAYER_NAME + "" + " - 1",new LinkedList() {{
-		add(0f);add(height / 2f);add(50f);
-	}});
-	goData1.put(GameObject.PLAYER_NAME + "" + " - 1",new LinkedList() {{
-		add(0f);add(height / 2f);add(50f);
-	}});
-
 }
 
 void mousePressed() {
@@ -208,34 +195,11 @@ void mouseReleased(){
 
 }
 
-final void makeWorld() {
-	initWorld();
-	for(Entry<String,LinkedList<Float>> entry: goData1.entrySet()) {
-		LinkedList<Float> t = entry.getValue();
-		String name = entry.getKey().split("\\s")[0].trim();
-
-		if(name.equals(GameObject.MOVING_PLATFORM_NAME)) {
-			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
-			println(name);
-		}
-		else if (name.equals(GameObject.PLATFORM_NAME)) {
-			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
-			println(name);
-		} else if (name.equals(GameObject.PLAYER_NAME)) {
-			objects.add(new Player(t.pop(),t.pop(),t.pop()));
-			println(name);
-		} else if (name.equals(GameObject.SPIKE_NAME)) {
-			objects.add(new Spike(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
-			println(name);
-		}
-	}
-}
-
 void initElse() {
 	keys = new boolean[4]; //0 = E, 1 = N, 2 = W, 3 = S
-	objects = new ArrayList<GameObject>();
-	objectsToRemove = new ArrayList<GameObject>();
-	objectsToAdd = new ArrayList<GameObject>();
+	objects = new LinkedList<GameObject>();
+	objectsToRemove = new LinkedList<GameObject>();
+	objectsToAdd = new LinkedList<GameObject>();
 }
 
 void incrementLevel() {
@@ -355,6 +319,7 @@ abstract class Moving extends GameObject{
 }
 
 class Player extends GameObject {
+<<<<<<< HEAD
 
     final static int JUMP_CALL_COUNT_MAX = 40;
     final static float DEATH_SIZE_THRESHOLD = 10;
@@ -418,6 +383,8 @@ class Player extends GameObject {
         world.remove(body);
         body.removeFromWorld();
     }
+=======
+>>>>>>> a5904e2ae03a63ac752aece75c339440505ced4e
 	final static int JUMP_CALL_COUNT_MAX = 40;
 	final static float DEATH_SIZE_THRESHOLD = 10;
 
@@ -497,6 +464,7 @@ class Player extends GameObject {
 };
 
 class MovingPlatform extends Moving {
+<<<<<<< HEAD
 
     MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
         super(minx, maxx, miny, maxy, sx, sy);
@@ -511,6 +479,11 @@ class MovingPlatform extends Moving {
         body.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
     }
 
+=======
+	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
+		super(minx, maxx, miny, maxy, sx, sy);
+	}
+>>>>>>> a5904e2ae03a63ac752aece75c339440505ced4e
 	MovingPlatform(float x, float y, float sx, float sy){
 		this(x, x, y, y, sx, sy);
 	}
@@ -529,8 +502,12 @@ class MovingPlatform extends Moving {
 };
 
 class FinalPlatform extends Moving {
+<<<<<<< HEAD
 
     FinalPlatform(float x, float y, float sx, float sy) {
+=======
+	FinalPlatform(float x, float y, float sx, float sy) {
+>>>>>>> a5904e2ae03a63ac752aece75c339440505ced4e
 		super(x, y, sx, sy);
     }
 
@@ -544,6 +521,7 @@ class FinalPlatform extends Moving {
 };
 
 class Spike extends Moving {
+<<<<<<< HEAD
 
     FPoly poly;
     float spikeDown;
@@ -568,6 +546,8 @@ class Spike extends Moving {
         poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
     }
 };
+=======
+>>>>>>> a5904e2ae03a63ac752aece75c339440505ced4e
 	FPoly poly;
 	float spikeDown;
 	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown) {
