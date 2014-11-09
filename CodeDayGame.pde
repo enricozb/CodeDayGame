@@ -8,6 +8,8 @@ final float TIME_STEP = .05;
 final float MAX_COUNT = 1024;
 final float LEVEL_PERCENT_THRESHOLD = .8;
 
+color[] colors = {color(167,197,189), color(229,221,203), color(167,197,189), color(207,70,71) }; //0-Player, 1-Spikes, 2-EndGate, 3-Platforms
+
 LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
 LinkedList<GameObject> objectsToAdd;
@@ -31,7 +33,7 @@ float globalTime;
 int countOfPress;
 
 void initEdges() {
-	world.setEdges();
+	world.setEdges(colors[3]);
 	world.top.setNoStroke();
 	world.bottom.setNoStroke();
 	world.left.setNoStroke();
@@ -96,7 +98,7 @@ void updateWorld() {
 
 
 void drawWorld() {
-	background(map(currentCount,0,MAX_COUNT,0,255),0,0);
+	background(82,70,86);
 	world.draw();
 	for(GameObject go : objects){
 		if(go instanceof TextObject)
@@ -189,6 +191,7 @@ abstract class Moving extends GameObject{
 	void init() {
 		super.init();
 		body.setStatic(true);
+		body.setFillColor(colors[3]);
 	}
 
 	Moving(float x, float y, float sx, float sy) {
@@ -239,6 +242,7 @@ class Player extends GameObject {
 		super.init();
 		body.setName(PLAYER_NAME);
 		body.setFriction(0);
+		body.setFillColor(colors[0]);
 	}
 
 	@Override
@@ -334,7 +338,7 @@ class FinalPlatform extends Moving {
 	void init() {
 		super.init();
 		body.setName(FINAL_PLATFORM_NAME);
-		body.setFill(0,0,255);
+		body.setFillColor(colors[2]);
 	}
 
 };
@@ -362,6 +366,7 @@ class Spike extends Moving {
 		poly.setStatic(true);
 		poly.setName(SPIKE_NAME);
 		poly.setNoStroke();
+		poly.setFillColor(colors[1]);
 		world.add(poly);
 	}
 
