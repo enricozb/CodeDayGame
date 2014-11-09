@@ -15,13 +15,14 @@ LinkedList<GameObject> objectsToRemove;
 LinkedList<GameObject> objectsToAdd;
 
 float currentCount;
+float currentHeight;
 
 int WIDTH = 1280;
 int HEIGHT = 500;
 
 GameObject[][] gos = {
 
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.")},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive."), new Spike(WIDTH/4, WIDTH/4, 0, HEIGHT, 20, 100, 1, 0)},
     {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)}
 };
 int level = 0;
@@ -68,6 +69,7 @@ void initElse() {
 }
 
 void nextLevel() {
+	currentHeight = 0;
 	level++;
 	objects.clear();
 	world.clear();
@@ -89,6 +91,9 @@ void updateWorld() {
 		go.update();
 	}
 
+	if(currentHeight/HEIGHT < currentCount/MAX_COUNT)
+		currentHeight++;
+
 	objects.removeAll(objectsToRemove);
 	objects.addAll(objectsToAdd);
 	objectsToRemove.clear();
@@ -100,6 +105,7 @@ void updateWorld() {
 void drawWorld() {
 	background(82,70,86);
 	world.draw();
+	rect(0,0,width,currentHeight);
 	for(GameObject go : objects){
 		if(go instanceof TextObject)
 			go.draw();
@@ -133,8 +139,6 @@ void setup() {
 }
 
 void draw() {
-	// if(frameCount == 1)
-	// 	loadLevel();
 	updateWorld();
 	drawWorld();
 }
