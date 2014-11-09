@@ -22,8 +22,7 @@ int WIDTH = 1280;
 int HEIGHT = 500;
 
 GameObject[][] gos = {
-
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32)},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH - 70 , HEIGHT-30, "PLAY",12), new TextObject(WIDTH/2 , HEIGHT/2, "SIXTY-FOUR",36) },
     {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
     {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)},
 };
@@ -124,14 +123,12 @@ void drawWorld() {
 	pushStyle();
 	fill(103,139,142);
 	rect(0,0,width,currentHeight);
-	fill(82,70,86);
-	rect(0,currentHeight,width,height);
-	popStyle();
-	world.draw();
 	for(GameObject go : objects){
 		if(go instanceof TextObject)
 			go.draw();
 	}
+	popStyle();
+	world.draw();
 }
 
 void keyPressed() {
@@ -153,13 +150,15 @@ void keyReleased() {
 }
 
 void setup() {
-	size(1280,500,"processing.core.PGraphicsRetina2D");
+	size(1280,500,OPENGL);
+	smooth(8);
 	initFisica();
 	initElse();
 	loadLevel();
 	textAlign(CENTER, CENTER);
 	stroke(colors[3]);
 	noStroke();
+	textMode(SHAPE);
 }
 
 void draw() {
@@ -231,9 +230,11 @@ abstract class Moving extends GameObject{
 class TextObject extends GameObject {
 
 	String message;
-	TextObject(float x, float y, String message) {
+	int fontSize;
+	TextObject(float x, float y, String message, int fontSize) {
 		super(x,y,10,10);
 		this.message = message;
+		this.fontSize = fontSize;
 	}
 
 	@Override
@@ -246,6 +247,7 @@ class TextObject extends GameObject {
 	void draw() {
 		pushStyle();
 		fill(255);
+		textSize(fontSize);
 		text(message, x, y);
 		popStyle();
 	}
