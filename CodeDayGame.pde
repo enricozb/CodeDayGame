@@ -22,7 +22,7 @@ boolean[] keys;
 float globalTime;
 int countOfPress;
 
-<<<<<<< HEAD
+
     void initFisica() {
         Fisica.init(this);
         world = new FWorld();
@@ -45,17 +45,17 @@ int countOfPress;
 
     void makeWorld() {
     	for(GameObject go : gos[level]) {
-    		objects.add(go);
     		go.init();
+    		objects.add(go);
     	}
    	}
     
 
     void initElse() {
         keys = new boolean[4]; //0 = E, 1 = N, 2 = W, 3 = S
-        objects = new ArrayList<GameObject>();
-        objectsToRemove = new ArrayList<GameObject>();
-        objectsToAdd = new ArrayList<GameObject>();
+        objects = new LinkedList<GameObject>();
+        objectsToRemove = new LinkedList<GameObject>();
+        objectsToAdd = new LinkedList<GameObject>();
     }
 
     void updateWorld() {
@@ -171,7 +171,7 @@ abstract class Moving extends GameObject {
     Moving(float x, float y, float sx, float sy) {
         this(x, x, y, y, sx, sy);
     }
-=======
+
 void initFisica() {
 	Fisica.init(this);
 	world = new FWorld();
@@ -351,13 +351,11 @@ abstract class Moving extends GameObject{
 	Moving(float x, float y, float sx, float sy) {
 		this(x, x, y, y, sx, sy);
 	}
->>>>>>> 151ac5c56711c5dd6a0e9f082eaa804c18f0c715
 
 }
 
 class Player extends GameObject {
 
-<<<<<<< HEAD
     final static int JUMP_CALL_COUNT_MAX = 40;
     final static float DEATH_SIZE_THRESHOLD = 10;
 
@@ -367,8 +365,6 @@ class Player extends GameObject {
 
     Player(float x, float y, float s) {
         super(x, y, s, s);
-        body.setName(PLAYER_NAME);
-        body.setFriction(0);
     }
 
     @Override
@@ -422,7 +418,6 @@ class Player extends GameObject {
         world.remove(body);
         body.removeFromWorld();
     }
-=======
 	final static int JUMP_CALL_COUNT_MAX = 40;
 	final static float DEATH_SIZE_THRESHOLD = 10;
 
@@ -499,15 +494,12 @@ class Player extends GameObject {
 		world.remove(body);
 		body.removeFromWorld();
 	}
->>>>>>> 151ac5c56711c5dd6a0e9f082eaa804c18f0c715
 };
 
 class MovingPlatform extends Moving {
 
-<<<<<<< HEAD
     MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
         super(minx, maxx, miny, maxy, sx, sy);
-        body.setName(MOVING_PLATFORM_NAME);
     }
 
     MovingPlatform(float x, float y, float sx, float sy) {
@@ -518,10 +510,7 @@ class MovingPlatform extends Moving {
     void update() {
         body.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
     }
-=======
-	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
-		super(minx, maxx, miny, maxy, sx, sy);
-	}
+
 	MovingPlatform(float x, float y, float sx, float sy){
 		this(x, x, y, y, sx, sy);
 	}
@@ -536,22 +525,14 @@ class MovingPlatform extends Moving {
 	void update() {
 		body.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
 	}
->>>>>>> 151ac5c56711c5dd6a0e9f082eaa804c18f0c715
 
 };
 
 class FinalPlatform extends Moving {
 
-<<<<<<< HEAD
     FinalPlatform(float x, float y, float sx, float sy) {
-        super(x, y, sx, sy);
-        body.setName(FINAL_PLATFORM_NAME);
-        body.setFill(0, 0, 255);
-    }
-=======
-	FinalPlatform(float x, float y, float sx, float sy) {
 		super(x, y, sx, sy);
-	}
+    }
 
 	@Override
 	void init() {
@@ -559,21 +540,16 @@ class FinalPlatform extends Moving {
 		body.setName(FINAL_PLATFORM_NAME);
 		body.setFill(0,0,255);
 	}
->>>>>>> 151ac5c56711c5dd6a0e9f082eaa804c18f0c715
 
 };
 
 class Spike extends Moving {
 
-<<<<<<< HEAD
     FPoly poly;
     float spikeDown;
 
     Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown) {
         super(minx, maxx, miny, maxy, sx, sy);
-        this.spikeDown = spikeDown;
-        sensorize();
-        initTriangularBody();
     }
 
     private void initTriangularBody() {
@@ -592,7 +568,6 @@ class Spike extends Moving {
         poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
     }
 };
-=======
 	FPoly poly;
 	float spikeDown;
 	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown) {
@@ -623,4 +598,3 @@ class Spike extends Moving {
 		poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
 	}
 };
->>>>>>> 151ac5c56711c5dd6a0e9f082eaa804c18f0c715
