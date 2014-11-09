@@ -75,7 +75,6 @@ void setup() {
 void draw() {
 	updateWorld();
 	drawWorld();
-	spike.update();
 }
 
 abstract class GameObject {
@@ -90,7 +89,6 @@ abstract class GameObject {
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
-		body.setNoStroke();
 		world.add(body);
 		this.sx = sx;
 		this.sy = sy;
@@ -127,7 +125,7 @@ class Player extends GameObject {
 
 	@Override
 	void update() {
-
+		
 	}
 
 	private void split() {
@@ -144,7 +142,7 @@ class MovingPlatform extends Moving {
 
 	@Override
 	void update() {
-		body.setPosition(minx, map(noise(globalTime), 0, 1, miny, maxy));
+		body.setPosition(map(sin(globalTime), -1, 1, minx, maxx) - width/2, map(sin(globalTime), -1, 1, miny, maxy) - height/2);
 	}
 
 };
