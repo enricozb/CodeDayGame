@@ -87,28 +87,27 @@ void keyReleased() {
 	}
 }
 
-Player player;
-
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
 	makeWorld();
-	player = new Player(width/2, height/2, 25);
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
 	player.update();
 >>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
+=======
+>>>>>>> Stashed changes
 }
 
 abstract class GameObject {
 
-	final static String PLATFORM_NAME = "plat";
 	final static String MOVING_PLATFORM_NAME = "mplat";
 	final static String SPIKE_NAME = "spike";
 	final static String PLAYER_NAME = "player";
@@ -118,10 +117,13 @@ abstract class GameObject {
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
 		world.add(body);
 >>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
+=======
+>>>>>>> Stashed changes
 		this.sx = sx;
 		this.sy = sy;
 		world.add(body);
