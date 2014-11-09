@@ -7,6 +7,7 @@ final float TIME_STEP = .05;
 ArrayList<GameObject> objects;
 ArrayList<GameObject> objectsToRemove;
 ArrayList<GameObject> objectsToAdd;
+
 HashMap<String, LinkedList<Float>> goData1 = new HashMap<String, LinkedList<Float>>();
 HashMap<String, LinkedList<Float>> goData2 = new HashMap<String, LinkedList<Float>>();
 
