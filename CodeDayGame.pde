@@ -83,7 +83,7 @@ GameObject[][] gos = {
 
    // {new Player(50f, 50f, 32f), new MovingPlatform(WIDTH/4 - 100, WIDTH/4 - 100, HEIGHT - 100, HEIGHT, 70, 400, 0), new Spike(WIDTH/2, WIDTH/2, HEIGHT/2, HEIGHT/2,WIDTH,30f,1f,0)}
 };
-int level = 1;
+int level = 0;
 
 FWorld world;
 boolean[] keys;
