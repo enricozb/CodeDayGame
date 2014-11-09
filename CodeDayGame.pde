@@ -1,6 +1,6 @@
 import fisica.*;
 
-final float TIME_STEP = .001;
+final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
 FWorld world;
@@ -26,6 +26,7 @@ void updateWorld() {
 }
 
 void drawWorld() {
+	background(255);
 	world.draw();
 }
 
@@ -47,18 +48,27 @@ void keyReleased() {
 	}
 }
 
+Spike spike;
 void setup() {
 	size(1280,720,OPENGL);
 	initFisica();
 	initElse();
+	spike = new Spike(width/2,width/2, height/2, height/2 + 100, 40, 100, false);
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
+	spike.update();
 }
 
 abstract class GameObject {
+
+	final String PLATFORM_NAME = "plat";
+	final String MOVING_PLATFORM_NAME = "mplat";
+	final String SPIKE_NAME = "spike";
+	final String PLAYER_NAME = "player";
+
 	FBox body;
 	float sx, sy;
 	GameObject(float x, float y, float sx, float sy) {
@@ -88,6 +98,7 @@ abstract class Moving extends GameObject{
 		this.maxx = maxx;
 		this.miny = miny;
 		this.maxy = maxy;
+		body.setStatic(true);
 	}
 
 }
@@ -111,8 +122,6 @@ class MovingPlatform extends Moving {
 
 	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
 		super(minx, maxx, miny, maxy, sx, sy);
-		this.miny = miny;
-		this.maxy = maxy;
 	}
 
 	@Override
@@ -125,25 +134,25 @@ class MovingPlatform extends Moving {
 class Spike extends Moving {
 
 	FPoly poly;
-
-	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy) {
+	boolean spikeDown;
+	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, boolean spikeDown) {
 		super(minx, maxx, miny, maxy, sx, sy);
-		this.miny = miny;
-		this.maxy = maxy;
+		this.spikeDown = spikeDown;
 		sensorize();
 		initTriangularBody();
 	}
 
 	private void initTriangularBody() {
 		poly = new FPoly();
-		poly.vertex(minx - sx/2, miny - sy/2);
-		poly.vertex(minx + sx/2, miny - sy/2);
-		poly.vertex(minx, miny + sy/2);
+		poly.vertex(minx - sx/2, miny - sy/2 * (spikeDown ? 1 : -1));
+		poly.vertex(minx + sx/2, miny - sy/2 * (spikeDown ? 1 : -1));
+		poly.vertex(minx, miny + sy/2 * (spikeDown ? 1 : -1));
+		poly.setStatic(true);
 		world.add(poly);
 	}
 
 	@Override
 	void update() {
-		body.setPosition(minx, map(noise(globalTime), 0, 1, miny, maxy));
+		poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx) - width/2, map(sin(globalTime), -1, 1, miny, maxy) - height/2);
 	}
 };
