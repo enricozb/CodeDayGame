@@ -44,8 +44,11 @@ final void makeWorld() {
 			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
 			println(name);
 		}
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
 	}
 }
 
@@ -84,16 +87,23 @@ void keyReleased() {
 	}
 }
 
+Player player;
+
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
 	makeWorld();
+	player = new Player(width/2, height/2, 25);
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
+<<<<<<< HEAD
+=======
+	player.update();
+>>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
 }
 
 abstract class GameObject {
@@ -108,6 +118,10 @@ abstract class GameObject {
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
+<<<<<<< HEAD
+=======
+		world.add(body);
+>>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
 		this.sx = sx;
 		this.sy = sy;
 		world.add(body);
@@ -137,14 +151,45 @@ abstract class Moving extends GameObject{
 }
 
 class Player extends GameObject {
+
+	final static int JUMP_CALL_COUNT_MAX = 40;
+
 	Player(float x, float y, float s) {
 		super(x,y,s,s);
 		body.setName(PLAYER_NAME);
+		body.setFriction(0);
 	}
+
+	boolean lastJump = false;
+	int jumpCallCount = 0;
 
 	@Override
 	void update() {
-		
+
+		ArrayList<FBody> bodiesTouching = body.getTouching();
+		if(lastJump){
+			if(jumpCallCount >= JUMP_CALL_COUNT_MAX){
+				jumpCallCount = 0;
+				lastJump = false;
+			}
+			jumpCallCount++;
+		}
+		for(FBody fb : bodiesTouching){
+			if(keys[1]) {
+				if(fb.getY() > body.getY() && !fb.isSensor() && !lastJump) {
+					lastJump = true;
+					body.addImpulse(0, -1000);
+					break;
+				}	
+			}
+			if(fb.getName() == SPIKE_NAME){
+				split();
+			}
+		}
+
+		if(keys[0]) body.setVelocity(150, body.getVelocityY());
+		if(keys[2]) body.setVelocity(-150, body.getVelocityY());
+		if(!keys[0] && !keys[2] && bodiesTouching.size() != 0) body.setVelocity(0, body.getVelocityY());
 	}
 
 	private void split() {
