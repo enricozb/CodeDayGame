@@ -5,6 +5,8 @@ import java.util.Map.Entry;
 final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
+ArrayList<GameObject> objectsToRemove;
+ArrayList<GameObject> objectsToAdd;
 HashMap<String, LinkedList<Float>> goData1 = new HashMap<String, LinkedList<Float>>();
 HashMap<String, LinkedList<Float>> goData2 = new HashMap<String, LinkedList<Float>>();
 
@@ -70,16 +72,22 @@ final void makeWorld() {
 		}
 	}
 }
-
 void initElse() {
 	keys = new boolean[4]; //0 = E, 1 = N, 2 = W, 3 = S
 	objects = new ArrayList<GameObject>();
+	objectsToRemove = new ArrayList<GameObject>();
+	objectsToAdd = new ArrayList<GameObject>();
 }
 
 void updateWorld() {
 	world.step();
-	for(GameObject go: objects)
+	for(GameObject go : objects){
 		go.update();
+	}
+	objects.removeAll(objectsToRemove);
+	objects.addAll(objectsToAdd);
+	objectsToRemove.clear();
+	objectsToAdd.clear();
 	globalTime += TIME_STEP;
 }
 
@@ -105,13 +113,21 @@ void keyReleased() {
 		case DOWN: keys[3] = false; break; 
 	}
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> c72b796ab7dd1a4014df917672ff6b246e075d9e
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
 	makeWorld();
+<<<<<<< HEAD
+=======
+	objects.add(new Player(width/2, height/2, 25));
+	objects.add(new Spike(width/4,width/4, 0, 200, 20, 100,true));
+>>>>>>> c72b796ab7dd1a4014df917672ff6b246e075d9e
 }
 
 void draw() {
@@ -121,18 +137,25 @@ void draw() {
 
 abstract class GameObject {
 
-	final static String PLATFORM_NAME = "plat";
 	final static String MOVING_PLATFORM_NAME = "mplat";
+	final static String PLATFORM_NAME = "plat";
 	final static String SPIKE_NAME = "spike";
 	final static String PLAYER_NAME = "player";
 
 	FBox body;
 	float sx, sy;
+	float x, y;
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
+<<<<<<< HEAD
+=======
+		body.setNoStroke();
+>>>>>>> c72b796ab7dd1a4014df917672ff6b246e075d9e
 		this.sx = sx;
 		this.sy = sy;
+		this.x = x;
+		this.y = y;
 		world.add(body);
 	}
 
@@ -162,6 +185,9 @@ abstract class Moving extends GameObject{
 class Player extends GameObject {
 
 	final static int JUMP_CALL_COUNT_MAX = 40;
+	final static float DEATH_SIZE_THRESHOLD = 5;
+
+	boolean dead = false;
 
 	Player(float x, float y, float s) {
 		super(x,y,s,s);
@@ -202,7 +228,18 @@ class Player extends GameObject {
 	}
 
 	private void split() {
-
+		objectsToRemove.add(this);
+		if(sx > DEATH_SIZE_THRESHOLD && !dead) {
+			dead = true;
+			Player a = new Player(body.getX() + sx/2, body.getY(), sx/sqrt(2));
+			Player b = new Player(body.getX() - sx/2, body.getY(), sx/sqrt(2));
+			a.body.setVelocity(300,body.getVelocityY());
+			b.body.setVelocity(-300,body.getVelocityY());
+			objectsToAdd.add(a);
+			objectsToAdd.add(b);
+		}
+		world.remove(body);
+		body.removeFromWorld();
 	}
 };
 
@@ -246,6 +283,6 @@ class Spike extends Moving {
 
 	@Override
 	void update() {
-		poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx) - width/2, map(sin(globalTime), -1, 1, miny, maxy) - height/2);
+		poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
 	}
 };
