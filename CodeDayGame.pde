@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 final float TIME_STEP = .05;
 final float MAX_COUNT = 1024;
-final float LEVEL_PERCENT_THRESHOLD = .8;
+final float LEVEL_PERCENT_THRESHOLD = .7;
 final float HEIGHT_STEP = 5;
 
 color[] colors = {color(167,197,189), color(229,221,203), color(192,41,66), color(207,70,71) }; //0-Player, 1-Spikes, 2-EndGate, 3-Platforms
@@ -23,7 +23,7 @@ int HEIGHT = 500;
 
 GameObject[][] gos = {
 
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.")},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32)},
     {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
     {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)},
 };
@@ -95,6 +95,7 @@ void updateWorld() {
 			liveCount++;
 		go.update();
 	}
+	println(liveCount);
 	if(liveCount == 0 && currentHeight > 0 && currentCount/MAX_COUNT < LEVEL_PERCENT_THRESHOLD)
 	{
 		currentHeight -= HEIGHT_STEP;
@@ -152,7 +153,7 @@ void keyReleased() {
 }
 
 void setup() {
-	size(1280,500,OPENGL);
+	size(1280,500,"processing.core.PGraphicsRetina2D");
 	initFisica();
 	initElse();
 	loadLevel();
@@ -276,6 +277,13 @@ class Player extends GameObject {
 	@Override
 	void update() {
 
+		if(body.getX() < 0 || body.getX() > WIDTH || body.getY() < 0 || body.getY() > HEIGHT)
+		{
+			dead = true;
+			objectsToRemove.add(this);
+			world.remove(body);
+			body.removeFromWorld();
+		}
 		ArrayList<FBody> bodiesTouching = body.getTouching();
 		if(lastJump){
 			if(jumpCallCount >= JUMP_CALL_COUNT_MAX){
@@ -288,7 +296,7 @@ class Player extends GameObject {
 			if(keys[1]) {
 				if(fb.getY() > body.getY() && !fb.isSensor() && !lastJump) {
 					lastJump = true;
-					body.setVelocity(body.getVelocityY(), -500);
+					body.setVelocity(body.getVelocityY(), -700);
 					body.adjustAngularVelocity(random(-10,10));
 					break;
 				}	
