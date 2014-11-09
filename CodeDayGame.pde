@@ -3,6 +3,7 @@ import fisica.*;
 final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
+Hashmap<String, Stack<Float>> goData1 = new Hashmap<String, Stack<Float>>();
 FWorld world;
 boolean[] keys;
 
@@ -13,6 +14,23 @@ void initFisica() {
 	world = new FWorld();
 	world.setEdges();
 	world.setGravity(0,1e3);
+}
+void initWorld() {
+	
+	goData1.put(MOVING_PLATFORM_NAME + "" + "- 1",new Stack() {{
+		add(0);add(0);add(0);add(50);add(20);add(50);
+	}});
+}
+final makeWorld() {
+	for(Map.Entry<String,Stack<Float>> entry: goData1.entrySet()) {
+			Stack t = entry.getValue();
+			switch(entry.getKey().split("\\s")[0]){
+				case "MovingPlatform":
+					objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop,t.pop(),t.pop));
+			}
+	}
+
+
 }
 
 void initElse() {
