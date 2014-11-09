@@ -19,7 +19,6 @@ void initFisica() {
 }
 
 void initWorld() {
-	
 	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + " - 1",new LinkedList() {{
 		add(0f);add(400f);add(200f);add(400f);add(300f);add(300f);
 	}});
@@ -30,10 +29,23 @@ final void makeWorld() {
 	for(Entry<String,LinkedList<Float>> entry: goData1.entrySet()) {
 		LinkedList<Float> t = entry.getValue();
 		String name = entry.getKey().split("\\s")[0].trim();
+
 		if(name.equals(GameObject.MOVING_PLATFORM_NAME)) {
 			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
+			println(name);	
 		}
-		println(name);	
+		else if (name.equals(GameObject.PLATFORM_NAME)) {
+			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
+			println(name);
+		} else if (name.equals(GameObject.PLAYER_NAME)) {
+			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
+			println(name);
+		} else if (name.equals(GameObject.SPIKE_NAME)) {
+			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
+			println(name);
+		}
+
+
 	}
 }
 
@@ -82,10 +94,6 @@ void setup() {
 void draw() {
 	updateWorld();
 	drawWorld();
-<<<<<<< HEAD
-	// spike.update();
-=======
->>>>>>> 10984b20b4e9a143f98629fce5faf98ead8cbabe
 }
 
 abstract class GameObject {
@@ -100,13 +108,9 @@ abstract class GameObject {
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
-<<<<<<< HEAD
-		
-=======
->>>>>>> 10984b20b4e9a143f98629fce5faf98ead8cbabe
-		world.add(body);
 		this.sx = sx;
 		this.sy = sy;
+		world.add(body);
 	}
 
 	void sensorize() {
@@ -154,10 +158,13 @@ class MovingPlatform extends Moving {
 		super(minx, maxx, miny, maxy, sx, sy);
 		body.setName(MOVING_PLATFORM_NAME);
 	}
+	MovingPlatform(float x, float y, float sx, float sy){
+		this(x, x, y, y, sx, sy);
+	}
 
 	@Override
 	void update() {
-		body.setPosition(map(sin(globalTime), -1, 1, minx, maxx) - width/2, map(sin(globalTime), -1, 1, miny, maxy) - height/2);
+		body.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
 	}
 
 };
