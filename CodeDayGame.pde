@@ -132,9 +132,10 @@ void draw() {
 abstract class GameObject {
 
 	final static String MOVING_PLATFORM_NAME = "mplat";
+	final static String FINAL_PLATFORM_NAME = "fplat";
 	final static String PLATFORM_NAME = "plat";
-	final static String SPIKE_NAME = "spike";
 	final static String PLAYER_NAME = "player";
+	final static String SPIKE_NAME = "spike";
 
 	FBox body;
 	float sx, sy;
@@ -170,13 +171,16 @@ abstract class Moving extends GameObject{
 		this.maxy = maxy;
 		body.setStatic(true);
 	}
+	Moving(float x, float y, float sx, float sy) {
+		this(x, x, y, y, sx, sy);
+	}
 
 }
 
 class Player extends GameObject {
 
 	final static int JUMP_CALL_COUNT_MAX = 40;
-	final static float DEATH_SIZE_THRESHOLD = 5;
+	final static float DEATH_SIZE_THRESHOLD = 10;
 
 	boolean dead = false;
 
@@ -205,17 +209,25 @@ class Player extends GameObject {
 				if(fb.getY() > body.getY() && !fb.isSensor() && !lastJump) {
 					lastJump = true;
 					body.setVelocity(body.getVelocityY(), -500);
+					body.adjustAngularVelocity(random(-10,10));
 					break;
 				}	
 			}
-			if(fb.getName() == SPIKE_NAME){
+			if(fb.getName() == SPIKE_NAME) {
 				split();
+			}
+			else if(fb.getName() == FINAL_PLATFORM_NAME) {
+				dead = true;
+				world.remove(body);
+				body.removeFromWorld();
+			}
+			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
+				body.setVelocity(0, body.getVelocityY());
 			}
 		}
 
 		if(keys[0]) body.setVelocity(150, body.getVelocityY());
 		if(keys[2]) body.setVelocity(-150, body.getVelocityY());
-		if(!keys[0] && !keys[2] && bodiesTouching.size() != 0) body.setVelocity(0, body.getVelocityY());
 	}
 
 	private void split() {
@@ -224,8 +236,10 @@ class Player extends GameObject {
 			dead = true;
 			Player a = new Player(body.getX() + sx/2, body.getY(), sx/sqrt(2));
 			Player b = new Player(body.getX() - sx/2, body.getY(), sx/sqrt(2));
-			a.body.setVelocity(300,body.getVelocityY());
-			b.body.setVelocity(-300,body.getVelocityY());
+			a.body.setVelocity(1000,body.getVelocityY());
+			b.body.setVelocity(-1000,body.getVelocityY());
+			a.body.adjustAngularVelocity(random(-10,10));
+			b.body.adjustAngularVelocity(random(-10,10));
 			objectsToAdd.add(a);
 			objectsToAdd.add(b);
 		}
@@ -247,6 +261,16 @@ class MovingPlatform extends Moving {
 	@Override
 	void update() {
 		body.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
+	}
+
+};
+
+class FinalPlatform extends Moving {
+
+	FinalPlatform(float x, float y, float sx, float sy) {
+		super(x, y, sx, sy);
+		body.setName(FINAL_PLATFORM_NAME);
+		body.setFill(0,0,255);
 	}
 
 };
