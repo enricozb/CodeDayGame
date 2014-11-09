@@ -28,6 +28,7 @@ int HEIGHT = 500;
 GameObject[][] gos = {
     {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH - 70 , HEIGHT-30, "PLAY",12), new TextObject(WIDTH/2 , HEIGHT/2, "SIXTY-FOUR",36) },
     {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
+<<<<<<< HEAD
    	{new Player(50, 300, 32),
    							new FinalPlatform(WIDTH, HEIGHT, 60, 300),
    							new MovingPlatform(0,0,HEIGHT-60,HEIGHT + 30,80,180,0),
@@ -61,6 +62,16 @@ GameObject[][] gos = {
 							new Spike(435,435,0,HEIGHT/2,120,500,1,radians(80)),
 							new Spike(495,495,0,HEIGHT/2,120,500,1,radians(90)),
 							new Spike(555,555,0,HEIGHT/2,120,500,1,radians(100))}
+=======
+    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.", 12)},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.", 12), new Spike(WIDTH/4, WIDTH/4, 0, HEIGHT, 20, 100, 1, 0)},
+    {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
+    {new Player(50, 50, 32), new MovingPlatform(WIDTH - 100, WIDTH - 100, HEIGHT/4, HEIGHT, 200f, 32f, 0f),new FinalPlatform(WIDTH - 60f , 150, 60f, 32f)},
+    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT, HEIGHT/4, 128, 32,10), new MovingPlatform(3 * WIDTH/4, 3 * WIDTH/4, HEIGHT, HEIGHT/4, 128, 32,0),
+    	new FinalPlatform(WIDTH - 80f , 50f, 60f, 32f),new Spike(WIDTH/2, WIDTH/2, HEIGHT/2, HEIGHT/2,WIDTH,30f,1f,0)},
+    {new Player(50f, 50f, 32f), new MovingPlatform(WIDTH/4 - 100, WIDTH/4 - 100, HEIGHT - 100, HEIGHT, 70, 400, 0), new Spike(WIDTH/2, WIDTH/2, HEIGHT/2, HEIGHT/2,WIDTH,30f,1f,0)}
+>>>>>>> FETCH_HEAD
 };
 int level = 0;
 
@@ -185,6 +196,10 @@ void keyPressed() {
 		case UP: keys[1] = true; break;
 		case LEFT: keys[2] = true; break;
 		case DOWN: keys[3] = true; break; 
+
+	}
+	if(keyCode == 'R') {
+		loadLevel();
 	}
 	if(key == 'n')
 		nextLevel();
