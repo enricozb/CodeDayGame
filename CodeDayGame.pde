@@ -23,7 +23,7 @@ int HEIGHT = 500;
 
 GameObject[][] gos = {
 
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive."), new Spike(WIDTH/4, WIDTH/4, 0, HEIGHT, 20, 100, 1, 0)},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.")},
     {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)}
 };
 int level = 0;
@@ -108,7 +108,10 @@ void updateWorld() {
 
 void drawWorld() {
 	background(82,70,86);
+	pushStyle();
+	fill(103,139,142);
 	rect(0,0,width,currentHeight);
+	popStyle();
 	world.draw();
 	for(GameObject go : objects){
 		if(go instanceof TextObject)
@@ -140,6 +143,8 @@ void setup() {
 	initElse();
 	loadLevel();
 	textAlign(CENTER, CENTER);
+	stroke(colors[3]);
+	noStroke();
 }
 
 void draw() {
@@ -282,7 +287,7 @@ class Player extends GameObject {
 				world.remove(body);
 				body.removeFromWorld();
 			}
-			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
+			else if(fb.getY() > body.getY() && fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
 				body.setVelocity(0, body.getVelocityY());
 			}
 		}
@@ -300,8 +305,8 @@ class Player extends GameObject {
 			a.init();
 			b.init();
 
-			a.body.setVelocity(300,body.getVelocityY() - 50);
-			b.body.setVelocity(-300,body.getVelocityY() - 50);
+			a.body.setVelocity(300,body.getVelocityY() - 100);
+			b.body.setVelocity(-300,body.getVelocityY() - 100);
 			a.body.adjustAngularVelocity(random(-10,10));
 			b.body.adjustAngularVelocity(random(-10,10));
 			objectsToAdd.add(a);
