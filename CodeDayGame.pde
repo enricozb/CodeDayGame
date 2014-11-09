@@ -95,7 +95,7 @@ void setup() {
 	initElse();
 	makeWorld();
 	objects.add(new Player(width/2, height/2, 25));
-	objects.add(new Spike(width/4,width/4, 0, 200, 20, 100,true));
+	objects.add(new Spike(width/4,width/4, 0, height, 20, 100,true));
 }
 
 void draw() {
@@ -178,7 +178,7 @@ class Player extends GameObject {
 			if(keys[1]) {
 				if(fb.getY() > body.getY() && !fb.isSensor() && !lastJump) {
 					lastJump = true;
-					body.addImpulse(0, -1000);
+					body.setVelocity(body.getVelocityY(), -500);
 					break;
 				}	
 			}
@@ -243,6 +243,7 @@ class Spike extends Moving {
 		poly.vertex(minx, miny + sy/2 * (spikeDown ? 1 : -1));
 		poly.setStatic(true);
 		poly.setName(SPIKE_NAME);
+		poly.setNoStroke();
 		world.add(poly);
 	}
 
