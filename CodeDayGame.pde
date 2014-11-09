@@ -1,9 +1,11 @@
 import fisica.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
-Hashmap<String, Stack<Float>> goData1 = new Hashmap<String, Stack<Float>>();
+HashMap<String, LinkedList<Float>> goData1 = new HashMap<String, LinkedList<Float>>();
 FWorld world;
 boolean[] keys;
 
@@ -15,22 +17,24 @@ void initFisica() {
 	world.setEdges();
 	world.setGravity(0,1e3);
 }
+
 void initWorld() {
 	
-	goData1.put(MOVING_PLATFORM_NAME + "" + "- 1",new Stack() {{
-		add(0);add(0);add(0);add(50);add(20);add(50);
+	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + " - 1",new LinkedList() {{
+		add(0f);add(400f);add(200f);add(400f);add(300f);add(300f);
 	}});
 }
-final makeWorld() {
-	for(Map.Entry<String,Stack<Float>> entry: goData1.entrySet()) {
-			Stack t = entry.getValue();
-			switch(entry.getKey().split("\\s")[0]){
-				case "MovingPlatform":
-					objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop,t.pop(),t.pop));
-			}
+
+final void makeWorld() {
+	initWorld();
+	for(Entry<String,LinkedList<Float>> entry: goData1.entrySet()) {
+		LinkedList<Float> t = entry.getValue();
+		String name = entry.getKey().split("\\s")[0].trim();
+		if(name.equals(GameObject.MOVING_PLATFORM_NAME)) {
+			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
+		}
+		println(name);	
 	}
-
-
 }
 
 void initElse() {
@@ -40,11 +44,13 @@ void initElse() {
 
 void updateWorld() {
 	world.step();
+	for(GameObject go: objects)
+		go.update();
 	globalTime += TIME_STEP;
 }
 
 void drawWorld() {
-	background(255);
+	background(255,0,0);
 	world.draw();
 }
 
@@ -67,30 +73,31 @@ void keyReleased() {
 }
 
 void setup() {
-	size(1280,720,OPENGL);
+	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
+	makeWorld();
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
-	spike.update();
+	// spike.update();
 }
 
 abstract class GameObject {
 
-	final String PLATFORM_NAME = "plat";
-	final String MOVING_PLATFORM_NAME = "mplat";
-	final String SPIKE_NAME = "spike";
-	final String PLAYER_NAME = "player";
+	final static String PLATFORM_NAME = "plat";
+	final static String MOVING_PLATFORM_NAME = "mplat";
+	final static String SPIKE_NAME = "spike";
+	final static String PLAYER_NAME = "player";
 
 	FBox body;
 	float sx, sy;
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
-		body.setNoStroke();
+		
 		world.add(body);
 		this.sx = sx;
 		this.sy = sy;
