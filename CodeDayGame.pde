@@ -5,7 +5,11 @@ import java.util.Map.Entry;
 final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
+<<<<<<< HEAD
 HashMap<String, Stack<Float>> goData1 = new HashMap<String, Stack<Float>>();
+=======
+HashMap<String, LinkedList<Float>> goData1 = new HashMap<String, LinkedList<Float>>();
+>>>>>>> FETCH_HEAD
 FWorld world;
 boolean[] keys;
 
@@ -17,8 +21,10 @@ void initFisica() {
 	world.setEdges();
 	world.setGravity(0,1e3);
 }
+
 void initWorld() {
 	
+<<<<<<< HEAD
 	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + "- 1",new Stack() {{
 		add(0);add(0);add(0);add(50);add(20);add(50);
 	}});
@@ -33,6 +39,23 @@ final void makeWorld() {
 		}
 	}
 	*/
+=======
+	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + " - 1",new LinkedList() {{
+		add(0f);add(400f);add(200f);add(400f);add(300f);add(300f);
+	}});
+}
+
+final void makeWorld() {
+	initWorld();
+	for(Entry<String,LinkedList<Float>> entry: goData1.entrySet()) {
+		LinkedList<Float> t = entry.getValue();
+		String name = entry.getKey().split("\\s")[0].trim();
+		if(name.equals(GameObject.MOVING_PLATFORM_NAME)) {
+			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
+		}
+		println(name);	
+	}
+>>>>>>> FETCH_HEAD
 }
 
 void initElse() {
@@ -42,11 +65,13 @@ void initElse() {
 
 void updateWorld() {
 	world.step();
+	for(GameObject go: objects)
+		go.update();
 	globalTime += TIME_STEP;
 }
 
 void drawWorld() {
-	background(255);
+	background(255,0,0);
 	world.draw();
 }
 
@@ -71,16 +96,27 @@ void keyReleased() {
 Player player;
 
 void setup() {
-	size(1280,720,OPENGL);
+	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
+<<<<<<< HEAD
 	player = new Player(width/2, height/2, 25);
+=======
+	makeWorld();
+>>>>>>> FETCH_HEAD
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
+<<<<<<< HEAD
 	player.update();
+=======
+<<<<<<< HEAD
+	// spike.update();
+=======
+>>>>>>> 10984b20b4e9a143f98629fce5faf98ead8cbabe
+>>>>>>> FETCH_HEAD
 }
 
 abstract class GameObject {
@@ -95,6 +131,10 @@ abstract class GameObject {
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
+<<<<<<< HEAD
+		
+=======
+>>>>>>> 10984b20b4e9a143f98629fce5faf98ead8cbabe
 		world.add(body);
 		this.sx = sx;
 		this.sy = sy;
