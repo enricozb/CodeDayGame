@@ -6,10 +6,13 @@ final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
 HashMap<String, LinkedList<Float>> goData1 = new HashMap<String, LinkedList<Float>>();
+HashMap<String, LinkedList<Float>> goData2 = new HashMap<String, LinkedList<Float>>();
+
 FWorld world;
 boolean[] keys;
 
 float globalTime;
+int countOfPress;
 
 void initFisica() {
 	Fisica.init(this);
@@ -19,11 +22,32 @@ void initFisica() {
 }
 
 void initWorld() {
+	//minx, maxX, miny, maxY, sx, sy
+	//remember to add f
+	//pls
 	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + " - 1",new LinkedList() {{
-		add(0f);add(400f);add(200f);add(400f);add(300f);add(300f);
+		add(width/2f);add(width/2f + 20);add(200f);add(200f);add(180f);add(30f);
 	}});
+	goData1.put(GameObject.PLAYER_NAME + "" + " - 1",new LinkedList() {{
+		add(0f);add(height / 2f);add(50f);
+	}});
+	goData1.put(GameObject.PLAYER_NAME + "" + " - 1",new LinkedList() {{
+		add(0f);add(height / 2f);add(50f);
+	}});
+
+}
+void mousePressed() {
+	if(mouseButton == LEFT)
+		print(countOfPress + ": " + mouseX + " " + mouseY + " ");
 }
 
+void mouseReleased(){
+	if(mouseButton == LEFT) {
+		println(mouseX + " " + mouseY);
+		countOfPress++;
+	}
+
+}
 final void makeWorld() {
 	initWorld();
 	for(Entry<String,LinkedList<Float>> entry: goData1.entrySet()) {
@@ -32,23 +56,18 @@ final void makeWorld() {
 
 		if(name.equals(GameObject.MOVING_PLATFORM_NAME)) {
 			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
-			println(name);	
+			println(name);
 		}
 		else if (name.equals(GameObject.PLATFORM_NAME)) {
 			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
 			println(name);
 		} else if (name.equals(GameObject.PLAYER_NAME)) {
-			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
+			objects.add(new Player(t.pop(),t.pop(),t.pop()));
 			println(name);
 		} else if (name.equals(GameObject.SPIKE_NAME)) {
-			objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop()));
+			objects.add(new Spike(t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop(),t.pop()));
 			println(name);
 		}
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
 	}
 }
 
@@ -87,23 +106,17 @@ void keyReleased() {
 	}
 }
 
-Player player;
 
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
 	makeWorld();
-	player = new Player(width/2, height/2, 25);
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
-<<<<<<< HEAD
-=======
-	player.update();
->>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
 }
 
 abstract class GameObject {
@@ -118,10 +131,6 @@ abstract class GameObject {
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
-<<<<<<< HEAD
-=======
-		world.add(body);
->>>>>>> 1444a91155ef145efbf5e8dbf3c1cd9ed81228bb
 		this.sx = sx;
 		this.sy = sy;
 		world.add(body);
@@ -217,8 +226,8 @@ class MovingPlatform extends Moving {
 class Spike extends Moving {
 
 	FPoly poly;
-	boolean spikeDown;
-	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, boolean spikeDown) {
+	float spikeDown;
+	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown) {
 		super(minx, maxx, miny, maxy, sx, sy);
 		this.spikeDown = spikeDown;
 		sensorize();
@@ -227,9 +236,9 @@ class Spike extends Moving {
 
 	private void initTriangularBody() {
 		poly = new FPoly();
-		poly.vertex(minx - sx/2, miny - sy/2 * (spikeDown ? 1 : -1));
-		poly.vertex(minx + sx/2, miny - sy/2 * (spikeDown ? 1 : -1));
-		poly.vertex(minx, miny + sy/2 * (spikeDown ? 1 : -1));
+		poly.vertex(minx - sx/2, miny - sy/2 * spikeDown);
+		poly.vertex(minx + sx/2, miny - sy/2 * spikeDown);
+		poly.vertex(minx, miny + sy/2 * spikeDown);
 		poly.setStatic(true);
 		poly.setName(SPIKE_NAME);
 		world.add(poly);
