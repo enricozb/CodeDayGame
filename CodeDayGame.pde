@@ -82,6 +82,10 @@ void initElse() {
 	objectsToAdd = new ArrayList<GameObject>();
 }
 
+void incrementLevel() {
+
+}
+
 void updateWorld() {
 	world.step();
 	for(GameObject go : objects){
@@ -117,14 +121,19 @@ void keyReleased() {
 	}
 }
 
+Player p;
+Spike s;
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
-	makeWorld();
-	objects.add(new Player(width/2, height/2, 25));
-
-	objects.add(new Spike(width/4, width/4, 0, height, 20, 100, 1));
+	//makeWorld();
+	p = new Player(width/2, height/2, 25);
+	p.init();
+	objects.add(p);
+	s = new Spike(width/4, width/4, 0, height, 20, 100, 1);
+	s.init();
+	objects.add(s);
 }
 
 void draw() {
@@ -141,16 +150,19 @@ abstract class GameObject {
 	final static String SPIKE_NAME = "spike";
 
 	FBox body;
-	float sx, sy;
-	float x, y;
+	float x, y, sx, sy;
+
 	GameObject(float x, float y, float sx, float sy) {
-		body = new FBox(sx, sy);
-		body.setPosition(x, y);
-		body.setNoStroke();
 		this.sx = sx;
 		this.sy = sy;
 		this.x = x;
 		this.y = y;
+	}
+
+	void init() {
+		body = new FBox(sx, sy);
+		body.setPosition(x, y);
+		body.setNoStroke();
 		world.add(body);
 	}
 
@@ -172,8 +184,14 @@ abstract class Moving extends GameObject{
 		this.maxx = maxx;
 		this.miny = miny;
 		this.maxy = maxy;
+	}
+
+	@Override
+	void init() {
+		super.init();
 		body.setStatic(true);
 	}
+
 	Moving(float x, float y, float sx, float sy) {
 		this(x, x, y, y, sx, sy);
 	}
@@ -189,12 +207,17 @@ class Player extends GameObject {
 
 	Player(float x, float y, float s) {
 		super(x,y,s,s);
-		body.setName(PLAYER_NAME);
-		body.setFriction(0);
 	}
 
 	boolean lastJump = false;
 	int jumpCallCount = 0;
+
+	@Override
+	void init() {
+		super.init();
+		body.setName(PLAYER_NAME);
+		body.setFriction(0);
+	}
 
 	@Override
 	void update() {
@@ -239,8 +262,12 @@ class Player extends GameObject {
 			dead = true;
 			Player a = new Player(body.getX() + sx/2, body.getY(), sx/sqrt(2));
 			Player b = new Player(body.getX() - sx/2, body.getY(), sx/sqrt(2));
-			a.body.setVelocity(1000,body.getVelocityY());
-			b.body.setVelocity(-1000,body.getVelocityY());
+
+			a.init();
+			b.init();
+
+			a.body.setVelocity(300,body.getVelocityY());
+			b.body.setVelocity(-300,body.getVelocityY());
 			a.body.adjustAngularVelocity(random(-10,10));
 			b.body.adjustAngularVelocity(random(-10,10));
 			objectsToAdd.add(a);
@@ -255,10 +282,15 @@ class MovingPlatform extends Moving {
 
 	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
 		super(minx, maxx, miny, maxy, sx, sy);
-		body.setName(MOVING_PLATFORM_NAME);
 	}
 	MovingPlatform(float x, float y, float sx, float sy){
 		this(x, x, y, y, sx, sy);
+	}
+
+	@Override
+	void init() {
+		super.init();
+		body.setName(MOVING_PLATFORM_NAME);
 	}
 
 	@Override
@@ -272,6 +304,11 @@ class FinalPlatform extends Moving {
 
 	FinalPlatform(float x, float y, float sx, float sy) {
 		super(x, y, sx, sy);
+	}
+
+	@Override
+	void init() {
+		super.init();
 		body.setName(FINAL_PLATFORM_NAME);
 		body.setFill(0,0,255);
 	}
@@ -285,6 +322,11 @@ class Spike extends Moving {
 	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown) {
 		super(minx, maxx, miny, maxy, sx, sy);
 		this.spikeDown = spikeDown;
+	}
+
+	@Override
+	void init() {
+		super.init();
 		sensorize();
 		initTriangularBody();
 	}
