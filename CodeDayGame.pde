@@ -38,6 +38,7 @@ void initWorld() {
 	}});
 
 }
+
 void mousePressed() {
 	if(mouseButton == LEFT)
 		print(countOfPress + ": " + mouseX + " " + mouseY + " ");
@@ -50,6 +51,7 @@ void mouseReleased(){
 	}
 
 }
+
 final void makeWorld() {
 	initWorld();
 	for(Entry<String,LinkedList<Float>> entry: goData1.entrySet()) {
@@ -72,6 +74,7 @@ final void makeWorld() {
 		}
 	}
 }
+
 void initElse() {
 	keys = new boolean[4]; //0 = E, 1 = N, 2 = W, 3 = S
 	objects = new ArrayList<GameObject>();
