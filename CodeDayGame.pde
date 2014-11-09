@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 final float TIME_STEP = .05;
+final float MAX_COUNT = 1024;
+final float LEVEL_PERCENT_THRESHOLD = .8;
 
 LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
@@ -17,8 +19,8 @@ int HEIGHT = 500;
 
 GameObject[][] gos = {
 
-    {new FinalPlatform(WIDTH - 70 , HEIGHT, 60, 32), new Player(50, 50, 32), new Spike(WIDTH/4,WIDTH/4,0,HEIGHT,20,100,1)},
-    {new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.")},
+    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)}
 };
 int level = 0;
 
@@ -28,10 +30,18 @@ boolean[] keys;
 float globalTime;
 int countOfPress;
 
+void initEdges() {
+	world.setEdges();
+	world.top.setNoStroke();
+	world.bottom.setNoStroke();
+	world.left.setNoStroke();
+	world.right.setNoStroke();
+}
+
 void initFisica() {
 	Fisica.init(this);
 	world = new FWorld();
-	world.setEdges();
+	initEdges();
 	world.setGravity(0,1e3);
 }
 
@@ -55,22 +65,12 @@ void initElse() {
 	objectsToAdd = new LinkedList<GameObject>();
 }
 
-<<<<<<< HEAD
-void nextlevel() {
-	// for(GameObject go : gos[level])
-	// 	world.remove(go.body);
-	try{
-		Thread.sleep(500);
-	}catch(InterruptedException e) {
-		println("fuck you");
-	}
-	gos[level] = null;
+void nextLevel() {
 	level++;
+	objects.clear();
+	world.clear();
+	initEdges();
 	loadLevel();
-=======
-void incrementLevel() {
-
->>>>>>> 0380ab442eba2aba7027872e738f245277540705
 }
 
 void loadLevel() {
@@ -96,8 +96,12 @@ void updateWorld() {
 
 
 void drawWorld() {
-	background(map(currentCount,0,1024,0,255),0,0);
+	background(map(currentCount,0,MAX_COUNT,0,255),0,0);
 	world.draw();
+	for(GameObject go : objects){
+		if(go instanceof TextObject)
+			go.draw();
+	}
 }
 
 void keyPressed() {
@@ -123,6 +127,7 @@ void setup() {
 	initFisica();
 	initElse();
 	loadLevel();
+	textAlign(CENTER, CENTER);
 }
 
 void draw() {
@@ -164,17 +169,20 @@ abstract class GameObject {
 	}
 
 	void update() {} //To be imlemented in subclasses
+
+	void draw() {}
 };
 
 abstract class Moving extends GameObject{
 	float minx, maxx, miny, maxy;
-
-	Moving(float minx, float maxx, float miny, float maxy, float sx, float sy) {
+	float offset; 
+	Moving(float minx, float maxx, float miny, float maxy, float sx, float sy, float offset) {
 		super(minx, miny, sx, sy);
 		this.minx = minx;
 		this.maxx = maxx;
 		this.miny = miny;
 		this.maxy = maxy;
+		this.offset = offset;
 	}
 
 	@Override
@@ -184,10 +192,34 @@ abstract class Moving extends GameObject{
 	}
 
 	Moving(float x, float y, float sx, float sy) {
-		this(x, x, y, y, sx, sy);
+		this(x, x, y, y, sx, sy, 0);
 	}
 
-}
+};
+
+class TextObject extends GameObject {
+
+	String message;
+	TextObject(float x, float y, String message) {
+		super(x,y,10,10);
+		this.message = message;
+	}
+
+	@Override
+	void init() {
+		super.init();
+		sensorize();
+	}
+
+	@Override
+	void draw() {
+		pushStyle();
+		fill(255);
+		text(message, x, y);
+		popStyle();
+	}
+
+};
 
 class Player extends GameObject {
 	final static int JUMP_CALL_COUNT_MAX = 40;
@@ -232,17 +264,14 @@ class Player extends GameObject {
 			if(fb.getName() == SPIKE_NAME) {
 				split();
 			}
-			else if(fb.getName() == FINAL_PLATFORM_NAME) {
+			else if(fb.getName() == FINAL_PLATFORM_NAME && !dead) {
 				dead = true;
+				currentCount += pow(body.getWidth(),2);
 				world.remove(body);
 				body.removeFromWorld();
-<<<<<<< HEAD
-				nextlevel();
-
-=======
-				currentCount += pow(body.getWidth(),2);
-				
->>>>>>> 0380ab442eba2aba7027872e738f245277540705
+				if(currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD){
+					nextLevel();
+				}
 			}
 			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
 				body.setVelocity(0, body.getVelocityY());
@@ -259,7 +288,6 @@ class Player extends GameObject {
 			dead = true;
 			Player a = new Player(body.getX() + sx/2, body.getY(), sx/sqrt(2));
 			Player b = new Player(body.getX() - sx/2, body.getY(), sx/sqrt(2));
-
 			a.init();
 			b.init();
 
@@ -276,11 +304,12 @@ class Player extends GameObject {
 };
 
 class MovingPlatform extends Moving {
-	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
-		super(minx, maxx, miny, maxy, sx, sy);
+
+	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy, float offset) {
+		super(minx, maxx, miny, maxy, sx, sy, offset);
 	}
 	MovingPlatform(float x, float y, float sx, float sy){
-		this(x, x, y, y, sx, sy);
+		this(x, x, y, y, sx, sy, 0);
 	}
 
 	@Override
@@ -291,7 +320,7 @@ class MovingPlatform extends Moving {
 
 	@Override
 	void update() {
-		body.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
+		body.setPosition(map(sin(globalTime + offset), -1, 1, minx, maxx), map(sin(globalTime + offset), -1, 1, miny, maxy));
 	}
 
 };
@@ -313,8 +342,8 @@ class FinalPlatform extends Moving {
 class Spike extends Moving {
 	FPoly poly;
 	float spikeDown;
-	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown) {
-		super(minx, maxx, miny, maxy, sx, sy);
+	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy, float spikeDown, float offset) {
+		super(minx, maxx, miny, maxy, sx, sy, offset);
 		this.spikeDown = spikeDown;
 	}
 
@@ -338,6 +367,6 @@ class Spike extends Moving {
 
 	@Override
 	void update() {
-		poly.setPosition(map(sin(globalTime), -1, 1, minx, maxx), map(sin(globalTime), -1, 1, miny, maxy));
+		poly.setPosition(map(sin(globalTime + offset), -1, 1, minx, maxx), map(sin(globalTime + offset), -1, 1, miny, maxy));
 	}
 };
