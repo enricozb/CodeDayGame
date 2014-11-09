@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
-    final float TIME_STEP = .05;
+final float TIME_STEP = .05;
 
-    LinkedList<GameObject> objects;
-    LinkedList<GameObject> objectsToRemove;
-    LinkedList<GameObject> objectsToAdd;
-    int level  = 0;
-    GameObject[][] gos = {
-
-        {new FinalPlatform(width - 60, 0, 60, 32), new Player(50, 50, 32)},
-        {new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
-    };
+LinkedList<GameObject> objects;
+LinkedList<GameObject> objectsToRemove;
+LinkedList<GameObject> objectsToAdd;
+int level  = 0;
+GameObject[][] gos = {
+	{	new FinalPlatform(width - 60, 0, 60, 32), new Player(50, 50, 32)},
+	{	new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
+};
 
 FWorld world;
 boolean[] keys;
@@ -50,7 +49,7 @@ void initElse() {
 }
 
 void incrementLevel() {
-
+	
 }
 
 void updateWorld() {
@@ -88,19 +87,10 @@ void keyReleased() {
 	}
 }
 
-Player p;
-Spike s;
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
 	initElse();
-	//makeWorld();
-	p = new Player(width/2, height/2, 25);
-	p.init();
-	objects.add(p);
-	s = new Spike(width/4, width/4, 0, height, 20, 100, 1);
-	s.init();
-	objects.add(s);
 }
 
 void draw() {
