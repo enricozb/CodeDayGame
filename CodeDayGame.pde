@@ -48,12 +48,10 @@ void keyReleased() {
 	}
 }
 
-Spike spike;
 void setup() {
 	size(1280,720,OPENGL);
 	initFisica();
 	initElse();
-	spike = new Spike(width/2,width/2, height/2, height/2 + 100, 40, 100, false);
 }
 
 void draw() {
@@ -106,6 +104,7 @@ abstract class Moving extends GameObject{
 class Player extends GameObject {
 	Player(float x, float y, float s) {
 		super(x,y,s,s);
+		body.setName(PLAYER_NAME);
 	}
 
 	@Override
@@ -122,6 +121,7 @@ class MovingPlatform extends Moving {
 
 	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
 		super(minx, maxx, miny, maxy, sx, sy);
+		body.setName(MOVING_PLATFORM_NAME);
 	}
 
 	@Override
@@ -148,6 +148,7 @@ class Spike extends Moving {
 		poly.vertex(minx + sx/2, miny - sy/2 * (spikeDown ? 1 : -1));
 		poly.vertex(minx, miny + sy/2 * (spikeDown ? 1 : -1));
 		poly.setStatic(true);
+		poly.setName(SPIKE_NAME);
 		world.add(poly);
 	}
 
