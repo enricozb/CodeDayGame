@@ -1,10 +1,14 @@
 import fisica.*;
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer song;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
-final float TIME_STEP = .05;
+final float TIME_STEP = .03;
 final float MAX_COUNT = 1024;
 final float LEVEL_PERCENT_THRESHOLD = .7;
 final float HEIGHT_STEP = 5;
@@ -15,10 +19,6 @@ LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
 LinkedList<GameObject> objectsToAdd;
 
-
-
-
-
 float currentCount;
 float currentHeight;
 
@@ -26,9 +26,9 @@ int WIDTH = 1280;
 int HEIGHT = 500;
 
 GameObject[][] gos = {
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH - 70 , HEIGHT-30, "PLAY",12), new TextObject(WIDTH/2 , HEIGHT/2, "SIXTY-FOUR",36) },
+    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 450, 32), new TextObject(WIDTH - 70 , HEIGHT-30, "PLAY",12), new TextObject(WIDTH/2 , HEIGHT/2, "SIXTY-FOUR",36) },
+    {new Player(50, 50, 32), new MovingPlatform(WIDTH - 100, WIDTH - 100, HEIGHT/4 + 70, HEIGHT - 30, 200f, 32f, 0f),new FinalPlatform(WIDTH - 60f , 150, 60f, 32f)},
     {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
-<<<<<<< HEAD
    	{new Player(50, 300, 32),
    							new FinalPlatform(WIDTH, HEIGHT, 60, 300),
    							new MovingPlatform(0,0,HEIGHT-60,HEIGHT + 30,80,180,0),
@@ -61,25 +61,34 @@ GameObject[][] gos = {
 							new Spike(375,375,0,HEIGHT/2,120,500,1,radians(70)),
 							new Spike(435,435,0,HEIGHT/2,120,500,1,radians(80)),
 							new Spike(495,495,0,HEIGHT/2,120,500,1,radians(90)),
-							new Spike(555,555,0,HEIGHT/2,120,500,1,radians(100))}
-=======
-    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)},
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.", 12)},
-    {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH/2, HEIGHT/2, "Survive.", 12), new Spike(WIDTH/4, WIDTH/4, 0, HEIGHT, 20, 100, 1, 0)},
-    {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
-    {new Player(50, 50, 32), new MovingPlatform(WIDTH - 100, WIDTH - 100, HEIGHT/4, HEIGHT, 200f, 32f, 0f),new FinalPlatform(WIDTH - 60f , 150, 60f, 32f)},
+							new Spike(555,555,0,HEIGHT/2,120,500,1,radians(100))},
     {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT, HEIGHT/4, 128, 32,10), new MovingPlatform(3 * WIDTH/4, 3 * WIDTH/4, HEIGHT, HEIGHT/4, 128, 32,0),
-    	new FinalPlatform(WIDTH - 80f , 50f, 60f, 32f),new Spike(WIDTH/2, WIDTH/2, HEIGHT/2, HEIGHT/2,WIDTH,30f,1f,0)},
-    {new Player(50f, 50f, 32f), new MovingPlatform(WIDTH/4 - 100, WIDTH/4 - 100, HEIGHT - 100, HEIGHT, 70, 400, 0), new Spike(WIDTH/2, WIDTH/2, HEIGHT/2, HEIGHT/2,WIDTH,30f,1f,0)}
->>>>>>> FETCH_HEAD
+    	new FinalPlatform(WIDTH - 80f , 50f, 60f, 32f),
+    	new Spike(WIDTH/4,WIDTH/4, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 15,WIDTH/4 + 15, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 30,WIDTH/4 + 30, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 45,WIDTH/4 + 45, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 60,WIDTH/4 + 60, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 75,WIDTH/4 + 75, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 90,WIDTH/4 + 90, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 105,WIDTH/4 + 105, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 120,WIDTH/4 + 120, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 135,WIDTH/4 + 135, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 150,WIDTH/4 + 150, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 165,WIDTH/4 + 165, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 180,WIDTH/4 + 180, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+    	new Spike(WIDTH/4 + 195,WIDTH/4 + 195, HEIGHT/2- 10, HEIGHT/2- 10, 30,30,-1,0),
+
+    },
+
+   // {new Player(50f, 50f, 32f), new MovingPlatform(WIDTH/4 - 100, WIDTH/4 - 100, HEIGHT - 100, HEIGHT, 70, 400, 0), new Spike(WIDTH/2, WIDTH/2, HEIGHT/2, HEIGHT/2,WIDTH,30f,1f,0)}
 };
-int level = 0;
+int level = 1;
 
 FWorld world;
 boolean[] keys;
 
 float globalTime;
-int countOfPress;
 
 void initEdges() {
 	world.setEdges(colors[3]);
@@ -89,24 +98,18 @@ void initEdges() {
 	world.right.setNoStroke();
 }
 
+void initMinim(){
+	minim = new Minim(this);
+	song = minim.loadFile("bg.mp3");
+	song.play();
+	song.loop();
+}
+
 void initFisica() {
 	Fisica.init(this);
 	world = new FWorld();
 	initEdges();
 	world.setGravity(0,1e3);
-}
-
-void mousePressed() {
-	if(mouseButton == LEFT)
-		print(countOfPress + ": " + mouseX + " " + mouseY + " ");
-}
-
-void mouseReleased(){
-	if(mouseButton == LEFT) {
-		println(mouseX + " " + mouseY);
-		countOfPress++;
-	}
-
 }
 
 void initElse() {
@@ -148,13 +151,15 @@ void updateWorld() {
 	boolean b4 = currentHeight/HEIGHT < currentCount/MAX_COUNT;
 	boolean b5 = currentHeight < HEIGHT;
 
-	println("life1 : " + b1);
-	println("life2 : " + b2);
-	println("life3 : " + b3);
-	println("life4 : " + b4);
+	println("1 " + b1);
+	println("2 " + b2);
+	println("3 " + b3);
+	println("4 " + b4);
+	println("5 " + b5);
 
 	if(b1 && b2 && b3)
 	{
+		println("minus");
 		currentHeight -= HEIGHT_STEP;
 	}
 	if(b1 && !b2 && b3)
@@ -167,7 +172,6 @@ void updateWorld() {
 	}
 	if((b4 && !b3) || (!b1 && b4))
 	{
-		println("test");
 		currentHeight += HEIGHT_STEP;
 	}
 	objects.removeAll(objectsToRemove);
@@ -219,6 +223,7 @@ void setup() {
 	smooth(8);
 	initFisica();
 	initElse();
+	initMinim();
 	loadLevel();
 	textAlign(CENTER, CENTER);
 	stroke(colors[3]);
