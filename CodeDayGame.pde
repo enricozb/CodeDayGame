@@ -7,8 +7,9 @@ import java.util.Map.Entry;
 final float TIME_STEP = .05;
 final float MAX_COUNT = 1024;
 final float LEVEL_PERCENT_THRESHOLD = .8;
+final float HEIGHT_STEP = 5;
 
-color[] colors = {color(167,197,189), color(229,221,203), color(167,197,189), color(207,70,71) }; //0-Player, 1-Spikes, 2-EndGate, 3-Platforms
+color[] colors = {color(167,197,189), color(229,221,203), color(192,41,66), color(207,70,71) }; //0-Player, 1-Spikes, 2-EndGate, 3-Platforms
 
 LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
@@ -90,9 +91,12 @@ void updateWorld() {
 	for(GameObject go : objects){
 		go.update();
 	}
-
-	if(currentHeight/HEIGHT < currentCount/MAX_COUNT)
-		currentHeight++;
+	if(currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD && currentHeight >= HEIGHT) {
+		nextLevel();
+	}
+	if(currentHeight/HEIGHT < currentCount/MAX_COUNT){
+		currentHeight += HEIGHT_STEP;
+	}
 
 	objects.removeAll(objectsToRemove);
 	objects.addAll(objectsToAdd);
@@ -104,8 +108,8 @@ void updateWorld() {
 
 void drawWorld() {
 	background(82,70,86);
-	world.draw();
 	rect(0,0,width,currentHeight);
+	world.draw();
 	for(GameObject go : objects){
 		if(go instanceof TextObject)
 			go.draw();
@@ -277,9 +281,6 @@ class Player extends GameObject {
 				currentCount += pow(body.getWidth(),2);
 				world.remove(body);
 				body.removeFromWorld();
-				if(currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD){
-					nextLevel();
-				}
 			}
 			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
 				body.setVelocity(0, body.getVelocityY());
@@ -299,8 +300,8 @@ class Player extends GameObject {
 			a.init();
 			b.init();
 
-			a.body.setVelocity(300,body.getVelocityY());
-			b.body.setVelocity(-300,body.getVelocityY());
+			a.body.setVelocity(300,body.getVelocityY() - 50);
+			b.body.setVelocity(-300,body.getVelocityY() - 50);
 			a.body.adjustAngularVelocity(random(-10,10));
 			b.body.adjustAngularVelocity(random(-10,10));
 			objectsToAdd.add(a);
