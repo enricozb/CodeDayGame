@@ -1,7 +1,12 @@
 import fisica.*;
 
+final float TIME_STEP = .001;
+
+ArrayList<GameObject> objects;
 FWorld world;
 boolean[] keys;
+
+float globalTime;
 
 void initFisica() {
 	Fisica.init(this);
@@ -12,10 +17,12 @@ void initFisica() {
 
 void initElse() {
 	keys = new boolean[4]; //0 = E, 1 = N, 2 = W, 3 = S
+	objects = new ArrayList<GameObject>();
 }
 
 void updateWorld() {
 	world.step();
+	globalTime += TIME_STEP;
 }
 
 void drawWorld() {
@@ -69,6 +76,19 @@ abstract class GameObject {
 	void update() {} //To be imlemented in subclasses
 };
 
+abstract class Moving extends GameObject{
+	float minx, maxx, miny, maxy;
+
+	Moving(float minx, float maxx, float miny, float maxy, float sx, float sy) {
+		super(minx, miny, sx, sy);
+		this.minx = minx;
+		this.maxx = maxx;
+		this.miny = miny;
+		this.maxy = maxy;
+	}
+
+}
+
 class Player extends GameObject {
 	Player(float x, float y, float s) {
 		super(x,y,s,s);
@@ -78,16 +98,24 @@ class Player extends GameObject {
 	void update() {
 
 	}
+
+	private void split() {
+
+	}
 };
 
-class Spike extends GameObject {
-	Spike(float x, float y, float sx, float sy) {
-		super(x,y,sx,sy);
+class Spike extends Moving {
+
+	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy) {
+		super(minx, maxx, miny, maxy, sx, sy);
+		this.miny = miny;
+		this.maxy = maxy;
 		sensorize();
+		
 	}
 
 	@Override
 	void update() {
-
+		body.setPosition(minx, map(noise(globalTime), 0, 1, miny, maxy));
 	}
-}
+};
