@@ -53,7 +53,17 @@ void initElse() {
 	objectsToAdd = new LinkedList<GameObject>();
 }
 
-void incrementLevel() {
+void nextlevel() {
+	// for(GameObject go : gos[level])
+	// 	world.remove(go.body);
+	try{
+		Thread.sleep(500);
+	}catch(InterruptedException e) {
+		println("fuck you");
+	}
+	gos[level] = null;
+	level++;
+	loadLevel();
 }
 
 void loadLevel() {
@@ -62,8 +72,6 @@ void loadLevel() {
 		objects.add(go);
 	}
 }
-
-
 
 void updateWorld() {
 	world.step();
@@ -222,7 +230,8 @@ class Player extends GameObject {
 				dead = true;
 				world.remove(body);
 				body.removeFromWorld();
-				
+				nextlevel();
+
 			}
 			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
 				body.setVelocity(0, body.getVelocityY());
