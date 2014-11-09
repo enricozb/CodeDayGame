@@ -1,9 +1,11 @@
 import fisica.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 final float TIME_STEP = .05;
 
 ArrayList<GameObject> objects;
-Hashmap<String, Stack<Float>> goData1 = new Hashmap<String, Stack<Float>>();
+HashMap<String, Stack<Float>> goData1 = new HashMap<String, Stack<Float>>();
 FWorld world;
 boolean[] keys;
 
@@ -17,20 +19,20 @@ void initFisica() {
 }
 void initWorld() {
 	
-	goData1.put(MOVING_PLATFORM_NAME + "" + "- 1",new Stack() {{
+	goData1.put(GameObject.MOVING_PLATFORM_NAME + "" + "- 1",new Stack() {{
 		add(0);add(0);add(0);add(50);add(20);add(50);
 	}});
 }
-final makeWorld() {
-	for(Map.Entry<String,Stack<Float>> entry: goData1.entrySet()) {
-			Stack t = entry.getValue();
-			switch(entry.getKey().split("\\s")[0]){
-				case "MovingPlatform":
-					objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop,t.pop(),t.pop));
-			}
+final void makeWorld() {
+	/*
+	for(Entry<String,Stack<Float>> entry: goData1.entrySet()) {
+		Stack t = entry.getValue();
+		switch(entry.getKey().split("\\s")[0]) {
+			case "MovingPlatform":
+				objects.add(new MovingPlatform(t.pop(),t.pop(),t.pop(),t.pop,t.pop(),t.pop));
+		}
 	}
-
-
+	*/
 }
 
 void initElse() {
@@ -66,23 +68,27 @@ void keyReleased() {
 	}
 }
 
+Player player;
+
 void setup() {
 	size(1280,720,OPENGL);
 	initFisica();
 	initElse();
+	player = new Player(width/2, height/2, 25);
 }
 
 void draw() {
 	updateWorld();
 	drawWorld();
+	player.update();
 }
 
 abstract class GameObject {
 
-	final String PLATFORM_NAME = "plat";
-	final String MOVING_PLATFORM_NAME = "mplat";
-	final String SPIKE_NAME = "spike";
-	final String PLAYER_NAME = "player";
+	final static String PLATFORM_NAME = "plat";
+	final static String MOVING_PLATFORM_NAME = "mplat";
+	final static String SPIKE_NAME = "spike";
+	final static String PLAYER_NAME = "player";
 
 	FBox body;
 	float sx, sy;
@@ -118,14 +124,45 @@ abstract class Moving extends GameObject{
 }
 
 class Player extends GameObject {
+
+	final static int JUMP_CALL_COUNT_MAX = 40;
+
 	Player(float x, float y, float s) {
 		super(x,y,s,s);
 		body.setName(PLAYER_NAME);
+		body.setFriction(0);
 	}
+
+	boolean lastJump = false;
+	int jumpCallCount = 0;
 
 	@Override
 	void update() {
-		
+
+		ArrayList<FBody> bodiesTouching = body.getTouching();
+		if(lastJump){
+			if(jumpCallCount >= JUMP_CALL_COUNT_MAX){
+				jumpCallCount = 0;
+				lastJump = false;
+			}
+			jumpCallCount++;
+		}
+		for(FBody fb : bodiesTouching){
+			if(keys[1]) {
+				if(fb.getY() > body.getY() && !fb.isSensor() && !lastJump) {
+					lastJump = true;
+					body.addImpulse(0, -1000);
+					break;
+				}	
+			}
+			if(fb.getName() == SPIKE_NAME){
+				split();
+			}
+		}
+
+		if(keys[0]) body.setVelocity(150, body.getVelocityY());
+		if(keys[2]) body.setVelocity(-150, body.getVelocityY());
+		if(!keys[0] && !keys[2] && bodiesTouching.size() != 0) body.setVelocity(0, body.getVelocityY());
 	}
 
 	private void split() {
