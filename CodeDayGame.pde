@@ -10,12 +10,14 @@ LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
 LinkedList<GameObject> objectsToAdd;
 
+float currentCount;
+
 int WIDTH = 1280;
 int HEIGHT = 500;
 
 GameObject[][] gos = {
 
-    {new FinalPlatform(WIDTH - 70 , HEIGHT, 60, 32), new Player(50, 50, 32)},
+    {new FinalPlatform(WIDTH - 70 , HEIGHT, 60, 32), new Player(50, 50, 32), new Spike(WIDTH/4,WIDTH/4,0,HEIGHT,20,100,1)},
     {new Player(50, 50, 32), new MovingPlatform(width/2, width, 0, height, 200, 32 )}
 };
 int level = 0;
@@ -53,6 +55,7 @@ void initElse() {
 	objectsToAdd = new LinkedList<GameObject>();
 }
 
+<<<<<<< HEAD
 void nextlevel() {
 	// for(GameObject go : gos[level])
 	// 	world.remove(go.body);
@@ -64,9 +67,14 @@ void nextlevel() {
 	gos[level] = null;
 	level++;
 	loadLevel();
+=======
+void incrementLevel() {
+
+>>>>>>> 0380ab442eba2aba7027872e738f245277540705
 }
 
 void loadLevel() {
+	currentCount = 0;
 	for(GameObject go: gos[level]) {
 		go.init();
 		objects.add(go);
@@ -88,7 +96,7 @@ void updateWorld() {
 
 
 void drawWorld() {
-	background(255,0,0);
+	background(map(currentCount,0,1024,0,255),0,0);
 	world.draw();
 }
 
@@ -110,8 +118,6 @@ void keyReleased() {
 	}
 }
 
-Player p;
-Spike s;
 void setup() {
 	size(1280,500,OPENGL);
 	initFisica();
@@ -230,8 +236,13 @@ class Player extends GameObject {
 				dead = true;
 				world.remove(body);
 				body.removeFromWorld();
+<<<<<<< HEAD
 				nextlevel();
 
+=======
+				currentCount += pow(body.getWidth(),2);
+				
+>>>>>>> 0380ab442eba2aba7027872e738f245277540705
 			}
 			else if(fb.getName() != PLAYER_NAME && !keys[0] && !keys[2]) {
 				body.setVelocity(0, body.getVelocityY());
