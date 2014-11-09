@@ -89,16 +89,27 @@ void loadLevel() {
 
 void updateWorld() {
 	world.step();
+	int liveCount = 0;
 	for(GameObject go : objects){
+		if(go instanceof Player)
+			liveCount++;
 		go.update();
+	}
+	if(liveCount == 0 && currentHeight > 0 && currentCount/MAX_COUNT < LEVEL_PERCENT_THRESHOLD)
+	{
+		currentHeight -= HEIGHT_STEP;
+	}
+	else if(liveCount == 0 && currentHeight <= 0 && currentCount/MAX_COUNT < LEVEL_PERCENT_THRESHOLD)
+	{
+		loadLevel();
 	}
 	if(currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD && currentHeight >= HEIGHT) {
 		nextLevel();
 	}
-	if(currentHeight/HEIGHT < currentCount/MAX_COUNT){
+
+	if(currentHeight/HEIGHT < currentCount/MAX_COUNT && currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD || (liveCount > 0 && currentHeight/HEIGHT < currentCount/MAX_COUNT)){
 		currentHeight += HEIGHT_STEP;
 	}
-
 	objects.removeAll(objectsToRemove);
 	objects.addAll(objectsToAdd);
 	objectsToRemove.clear();
@@ -112,6 +123,8 @@ void drawWorld() {
 	pushStyle();
 	fill(103,139,142);
 	rect(0,0,width,currentHeight);
+	fill(82,70,86);
+	rect(0,currentHeight,width,height);
 	popStyle();
 	world.draw();
 	for(GameObject go : objects){
@@ -254,6 +267,7 @@ class Player extends GameObject {
 	@Override
 	void init() {
 		super.init();
+		dead = false;
 		body.setName(PLAYER_NAME);
 		body.setFriction(0);
 		body.setFillColor(colors[0]);
@@ -285,6 +299,7 @@ class Player extends GameObject {
 			else if(fb.getName() == FINAL_PLATFORM_NAME && !dead) {
 				dead = true;
 				currentCount += pow(body.getWidth(),2);
+				objectsToRemove.add(this);
 				world.remove(body);
 				body.removeFromWorld();
 			}
