@@ -15,6 +15,10 @@ LinkedList<GameObject> objects;
 LinkedList<GameObject> objectsToRemove;
 LinkedList<GameObject> objectsToAdd;
 
+
+
+
+
 float currentCount;
 float currentHeight;
 
@@ -24,7 +28,39 @@ int HEIGHT = 500;
 GameObject[][] gos = {
     {new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15), new Player(50, 50, 32), new TextObject(WIDTH - 70 , HEIGHT-30, "PLAY",12), new TextObject(WIDTH/2 , HEIGHT/2, "SIXTY-FOUR",36) },
     {new Player(50, 450, 32), new MovingPlatform(WIDTH/2, WIDTH/2, HEIGHT/2 - 20, HEIGHT/2 - 20, 32, HEIGHT, 0), new Spike(25,25,210,210,20,20,1, 0), new MovingPlatform(50,50,400,400,100,20,0), new FinalPlatform(WIDTH - 70 , HEIGHT-15/2f - 5, 60, 15)},
-    {new Player(50, 50, 32), new MovingPlatform(WIDTH/2, WIDTH, 0, HEIGHT, 200, 32, 0)},
+   	{new Player(50, 300, 32),
+   							new FinalPlatform(WIDTH, HEIGHT, 60, 300),
+   							new MovingPlatform(0,0,HEIGHT-60,HEIGHT + 30,80,180,0),
+   							new MovingPlatform(60,60,HEIGHT-60,HEIGHT + 30,80,180,radians(10)),
+   							new MovingPlatform(120,120,HEIGHT-60,HEIGHT + 30,80,180,radians(20)),
+   							new MovingPlatform(180,180,HEIGHT-60,HEIGHT + 30,80,180,radians(30)),
+   							new MovingPlatform(240,240,HEIGHT-60,HEIGHT + 30,80,180,radians(40)),
+   							new MovingPlatform(300,300,HEIGHT-60,HEIGHT + 30,80,180,radians(50)),
+							new MovingPlatform(360,360,HEIGHT-60,HEIGHT + 30,80,180,radians(60)),
+							new MovingPlatform(420,420,HEIGHT-60,HEIGHT + 30,80,180,radians(70)),
+							new MovingPlatform(480,480,HEIGHT-60,HEIGHT + 30,80,180,radians(80)),
+							new MovingPlatform(540,540,HEIGHT-60,HEIGHT + 30,80,180,radians(90)),
+							new MovingPlatform(600,600,HEIGHT-60,HEIGHT + 30,80,180,radians(100)),
+							new MovingPlatform(660,660,HEIGHT-60,HEIGHT + 30,80,180,radians(110)),
+   							new MovingPlatform(720,720,HEIGHT-60,HEIGHT + 30,80,180,radians(120)),
+   							new MovingPlatform(780,780,HEIGHT-60,HEIGHT + 30,80,180,radians(130)),
+   							new MovingPlatform(840,840,HEIGHT-60,HEIGHT + 30,80,180,radians(140)),
+   							new MovingPlatform(900,900,HEIGHT-60,HEIGHT + 30,80,180,radians(150)),
+							new MovingPlatform(960,960,HEIGHT-60,HEIGHT + 30,80,180,radians(160)),
+							new MovingPlatform(1020,1020,HEIGHT-60,HEIGHT + 30,80,180,radians(170)),
+							new MovingPlatform(1080,1080,HEIGHT-60,HEIGHT + 30,80,180,radians(180)),
+							new MovingPlatform(1140,1140,HEIGHT-60,HEIGHT + 30,80,180,radians(190)),
+							new MovingPlatform(1200,1200,HEIGHT-60,HEIGHT + 30,80,180,radians(200)),
+							new MovingPlatform(1260,1260,HEIGHT-60,HEIGHT + 30,80,180,radians(210)),
+							new Spike(75,75,0,HEIGHT/2,120,500,1,radians(20)),
+							new Spike(135,135,0,HEIGHT/2,120,500,1,radians(30)),
+							new Spike(195,195,0,HEIGHT/2,120,500,1,radians(40)),
+							new Spike(255,255,0,HEIGHT/2,120,500,1,radians(50)),
+							new Spike(315,315,0,HEIGHT/2,120,500,1,radians(60)),
+							new Spike(375,375,0,HEIGHT/2,120,500,1,radians(70)),
+							new Spike(435,435,0,HEIGHT/2,120,500,1,radians(80)),
+							new Spike(495,495,0,HEIGHT/2,120,500,1,radians(90)),
+							new Spike(555,555,0,HEIGHT/2,120,500,1,radians(100))}
 };
 int level = 0;
 
@@ -72,13 +108,13 @@ void initElse() {
 void nextLevel() {
 	currentHeight = 0;
 	level++;
-	objects.clear();
-	world.clear();
-	initEdges();
 	loadLevel();
 }
 
 void loadLevel() {
+	objects.clear();
+	world.clear();
+	initEdges();
 	currentCount = 0;
 	for(GameObject go: gos[level]) {
 		go.init();
@@ -94,20 +130,33 @@ void updateWorld() {
 			liveCount++;
 		go.update();
 	}
-	println(liveCount);
-	if(liveCount == 0 && currentHeight > 0 && currentCount/MAX_COUNT < LEVEL_PERCENT_THRESHOLD)
+
+	boolean b1 = liveCount == 0;
+	boolean b2 = currentHeight > 0;
+	boolean b3 = currentCount/MAX_COUNT < LEVEL_PERCENT_THRESHOLD;
+	boolean b4 = currentHeight/HEIGHT < currentCount/MAX_COUNT;
+	boolean b5 = currentHeight < HEIGHT;
+
+	println("life1 : " + b1);
+	println("life2 : " + b2);
+	println("life3 : " + b3);
+	println("life4 : " + b4);
+
+	if(b1 && b2 && b3)
 	{
 		currentHeight -= HEIGHT_STEP;
 	}
-	else if(liveCount == 0 && currentHeight <= 0 && currentCount/MAX_COUNT < LEVEL_PERCENT_THRESHOLD)
+	if(b1 && !b2 && b3)
 	{
 		loadLevel();
 	}
-	if(currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD && currentHeight >= HEIGHT) {
+	if(!b3 && !b4 && !b5)
+	{
 		nextLevel();
 	}
-
-	if(currentHeight/HEIGHT < currentCount/MAX_COUNT && currentCount/MAX_COUNT >= LEVEL_PERCENT_THRESHOLD || (liveCount > 0 && currentHeight/HEIGHT < currentCount/MAX_COUNT)){
+	if((b4 && !b3) || (!b1 && b4))
+	{
+		println("test");
 		currentHeight += HEIGHT_STEP;
 	}
 	objects.removeAll(objectsToRemove);
@@ -116,7 +165,6 @@ void updateWorld() {
 	objectsToAdd.clear();
 	globalTime += TIME_STEP;
 }
-
 
 void drawWorld() {
 	background(82,70,86);
@@ -138,6 +186,8 @@ void keyPressed() {
 		case LEFT: keys[2] = true; break;
 		case DOWN: keys[3] = true; break; 
 	}
+	if(key == 'n')
+		nextLevel();
 }
 
 void keyReleased() {
