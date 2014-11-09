@@ -60,11 +60,14 @@ void draw() {
 
 abstract class GameObject {
 	FBox body;
+	float sx, sy;
 	GameObject(float x, float y, float sx, float sy) {
 		body = new FBox(sx, sy);
 		body.setPosition(x, y);
 		body.setNoStroke();
 		world.add(body);
+		this.sx = sx;
+		this.sy = sy;
 	}
 
 	void sensorize() {
@@ -104,14 +107,39 @@ class Player extends GameObject {
 	}
 };
 
+class MovingPlatform extends Moving {
+
+	MovingPlatform(float minx, float maxx, float miny, float maxy, float sx, float sy) {
+		super(minx, maxx, miny, maxy, sx, sy);
+		this.miny = miny;
+		this.maxy = maxy;
+	}
+
+	@Override
+	void update() {
+		
+	}
+
+};
+
 class Spike extends Moving {
+
+	FPoly poly;
 
 	Spike(float minx, float maxx, float miny, float maxy, float sx, float sy) {
 		super(minx, maxx, miny, maxy, sx, sy);
 		this.miny = miny;
 		this.maxy = maxy;
 		sensorize();
-		
+		initTriangularBody();
+	}
+
+	private void initTriangularBody() {
+		poly = new FPoly();
+		poly.vertex(minx - sx/2, miny - sy/2);
+		poly.vertex(minx + sx/2, miny - sy/2);
+		poly.vertex(minx, miny + sy/2);
+		world.add(poly);
 	}
 
 	@Override
