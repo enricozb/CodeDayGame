@@ -117,7 +117,7 @@ class MovingPlatform extends Moving {
 
 	@Override
 	void update() {
-		
+		body.setPosition(minx, map(noise(globalTime), 0, 1, miny, maxy));
 	}
 
 };
